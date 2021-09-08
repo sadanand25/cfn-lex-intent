@@ -2,9 +2,11 @@
 var AWS = require('aws-sdk')
 var CfnLambda = require('cfn-lambda')
 
-var LexModelBuildingService = new AWS.LexModelBuildingService({
-  apiVersion: '2017-04-19'
-})
+//var LexModelBuildingService = new AWS.LexModelBuildingService({
+//  apiVersion: '2017-04-19'
+//})
+
+var lexmodelsv2 = new AWS.LexModelsV2({apiVersion: '2020-08-07'});
 
 
 // CloudFormation sends everything as a String, have to coerce these values.
@@ -21,7 +23,7 @@ const numProperties = [
 //   REPLACEMENT in Amazon Lex, and thus a changed PhysicalResourceId achieves
 //   this effect in our CloudFormation system.
 const Upsert = CfnLambda.SDKAlias({
-  api: LexModelBuildingService,
+  api: lexmodelsv2,
   forceNums: numProperties,
   method: 'putIntent',
   returnPhysicalId: 'name',
@@ -65,7 +67,7 @@ const Update = function (RequestPhysicalID, CfnRequestParams, OldCfnRequestParam
 // Ignore 404's if it's already gone.
 // 409's sometimes thrown if it's a recent deletion.
 const Delete = CfnLambda.SDKAlias({
-  api: LexModelBuildingService,
+  api: lexmodelsv2,
   method: 'deleteIntent',
   keys: ['name'],
   ignoreErrorCodes: [404, 409]
@@ -103,7 +105,7 @@ function getIntentAttrs (props, next) {
     version: latestVersion
   }
   console.log('Accessing current slot version with getIntent: %j', IntentParams)
-  LexModelBuildingService.getIntent(IntentParams, function (err, IntentData) {
+  lexmodelsv2.getIntent(IntentParams, function (err, IntentData) {
     if (err) {
       console.error('Problem accessing data during read to Intent: %j', err)
       return next(err.code + ': ' + err.message)
