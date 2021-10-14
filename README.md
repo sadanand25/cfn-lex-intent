@@ -3,7 +3,7 @@
 
 
 
-## Purpose########test
+## Purpose########test1
 
 AWS CloudFormation does not support Amazon Lex / AWS Lex. This is a Lambda-backed custom resource to add support for [AWS Lex Intents](http://docs.aws.amazon.com/lex/latest/dg/API_Intent.html) to CloudFormation.
 
